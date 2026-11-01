@@ -1,0 +1,40 @@
+name: Auto Update Winget Packages
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # 每天 UTC 0点 (北京时间早上8点) 执行
+  workflow_dispatch: # 允许手动点击触发
+
+jobs:
+  # 1. 读取配置，生成任务矩阵
+  prepare-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: set-matrix
+        run: |
+          JSON=$(cat packages.json | jq -c .)
+          echo "matrix={\"include\":$JSON}" >> $GITHUB_OUTPUT
+
+  # 2. 并发处理每个包
+  update-packages:
+    needs: prepare-matrix
+    runs-on: windows-latest
+    strategy:
+      matrix: ${{ fromJson(needs.prepare-matrix.outputs.matrix) }}
+      fail-fast: false # 某个包失败不影响其他包
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Process ${{ matrix.id }}
+        shell: pwsh
+        env:
+          WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
+        run: |
+          # 调用刚才写的核心脚本
+          ./.github/scripts/update-package.ps1 `
+            -PackageId "${{ matrix.id }}" `
+            -TargetRepo "${{ matrix.repo }}" `
+            -AssetRegex "${{ matrix.assetRegex }}"
