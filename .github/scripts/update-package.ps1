@@ -48,6 +48,11 @@ if ($latestVersion -eq $currentVersion) {
     exit 0
 }
 
+if ($currentVersion -eq "0.0.0") {
+    Write-Host "Package not found in winget-pkgs (PR likely still pending). Exiting gracefully."
+    exit 0
+}
+
 # 5. 下载 Komac 并提交更新
 Write-Host "New version detected! Submitting PR..."
 Invoke-WebRequest -Uri "https://github.com/russellbanks/Komac/releases/latest/download/komac-x86_64-pc-windows-msvc.exe" -OutFile komac.exe
