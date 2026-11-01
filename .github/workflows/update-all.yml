@@ -25,6 +25,7 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.prepare-matrix.outputs.matrix) }}
       fail-fast: false # 某个包失败不影响其他包
+    name: Update ${{ matrix.id }}
     steps:
       - uses: actions/checkout@v7
 
