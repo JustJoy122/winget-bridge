@@ -8,5 +8,10 @@
     "id": "luolangaga.tubatools",
     "repo": "luolangaga/tubatools",
     "assetRegex": "TubaWinUi3_Setup_.*_(x64|arm64)\\.exe$"
-  }
+  },
+    {
+    "id": "AnywhereLabs.DSHDesktop",
+    "repo": "anywhere-labs/dsh-desktop",
+    "assetRegex": "DSH-NEXT_.*-x64-Setup\\.exe$"
+  },
 ]
