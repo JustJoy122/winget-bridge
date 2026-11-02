@@ -8,12 +8,14 @@ This repository acts as a centralized maintenance hub for multiple open-source W
 
 ## 📊 Automation Status Dashboard
 
-**Last Checked:** <!-- TIMESTAMP_START -->Waiting for first run<!-- TIMESTAMP_END -->
+**Last Checked:** <!-- TIMESTAMP_START -->2026-11-02 05:36:01 (UTC)<!-- TIMESTAMP_END -->
 
 <!-- TABLE_START -->
 | Package | Version | Status | PR Link |
 | --- | --- | --- | --- |
-| Waiting for first run... | - | - | - |
+| AstralSightStudios.AstroBox | 2.2.5 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/467853) |
+| luolangaga.tubatools | 1.8.1 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/468454) |
+
 <!-- TABLE_END -->
 
 ## ✨ Core Mechanisms
@@ -46,3 +48,4 @@ To start tracking new software, edit the `packages.json` file in the root direct
 
 ## 📄 License
 This repository is licensed under the MIT License.
+

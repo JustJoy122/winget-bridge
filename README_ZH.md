@@ -8,12 +8,14 @@
 
 ## 📊 自动化状态面板
 
-**最后检查时间：** <!-- TIMESTAMP_START -->等待首次运行<!-- TIMESTAMP_END -->
+**最后检查时间：** <!-- TIMESTAMP_START -->2026-11-02 05:36:01 (UTC)<!-- TIMESTAMP_END -->
 
 <!-- TABLE_START -->
 | 软件包 | 版本 | 状态 | PR 链接 |
 | --- | --- | --- | --- |
-| 等待首次运行... | - | - | - |
+| AstralSightStudios.AstroBox | 2.2.5 | ⏳ PR 等待审核 | [View PR](https://github.com/microsoft/winget-pkgs/pull/467853) |
+| luolangaga.tubatools | 1.8.1 | ⏳ PR 等待审核 | [View PR](https://github.com/microsoft/winget-pkgs/pull/468454) |
+
 <!-- TABLE_END -->
 
 ## ✨ 核心机制
@@ -46,3 +48,4 @@
 
 ## 📄 开源协议
 本仓库基于 MIT License 开源。
+
