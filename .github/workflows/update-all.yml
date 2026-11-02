@@ -2,11 +2,10 @@ name: Auto Update Winget Packages
 
 on:
   schedule:
-    - cron: '0 0 * * *' # 每天 UTC 0点执行
-  workflow_dispatch: # 允许手动触发
+    - cron: '0,30 * * * *' 
+  workflow_dispatch:
 
 jobs:
-  # 1. 读取配置
   prepare-matrix:
     runs-on: ubuntu-latest
     outputs:
@@ -18,7 +17,6 @@ jobs:
           JSON=$(cat packages.json | jq -c .)
           echo "matrix={\"include\":$JSON}" >> $GITHUB_OUTPUT
 
-  # 2. 并发处理所有包
   update-packages:
     needs: prepare-matrix
     runs-on: windows-latest
@@ -48,7 +46,6 @@ jobs:
           name: result-${{ matrix.id }}
           path: results/
 
-  # 3. 汇总并同时更新中英 README
   update-readme:
     needs: update-packages
     runs-on: ubuntu-latest
@@ -67,15 +64,14 @@ jobs:
         shell: pwsh
         run: |
           $results = Get-ChildItem -Path "results/*.json" | ForEach-Object { Get-Content $_.FullName | ConvertFrom-Json }
-
-          # 生成英文表格
+          
           $tableEn = "| Package | Version | Status | PR Link |`n| --- | --- | --- | --- |`n"
-          # 生成中文表格
           $tableZh = "| 软件包 | 版本 | 状态 | PR 链接 |`n| --- | --- | --- | --- |`n"
           
           foreach ($r in $results) {
-              $link = if ($r.PRLink) { "[View PR]($($r.PRLink))" } else { "-" }
-              # 英文状态映射 (新增了 ⚠️ 的英文翻译)
+              $linkEn = if ($r.PRLink) { "[View PR]($($r.PRLink))" } else { "-" }
+              $linkZh = if ($r.PRLink) { "[查看 PR]($($r.PRLink))" } else { "-" }
+              
               $statusEn = switch ($r.Status) {
                   "✅ 已是最新" { "✅ Up to date" }
                   "⏳ PR 等待审核" { "⏳ PR Pending" }
@@ -83,13 +79,13 @@ jobs:
                   "⚠️ PR 提交可能失败" { "⚠️ Submission Failed" }
                   default { $r.Status }
               }
-              $tableEn += "| $($r.PackageId) | $($r.Version) | $statusEn | $link |`n"
-              $tableZh += "| $($r.PackageId) | $($r.Version) | $($r.Status) | $link |`n"
-          }          
+              
+              $tableEn += "| $($r.PackageId) | $($r.Version) | $statusEn | $linkEn |`n"
+              $tableZh += "| $($r.PackageId) | $($r.Version) | $($r.Status) | $linkZh |`n"
+          }
           
           $time = Get-Date -Format "yyyy-MM-dd HH:mm:ss (UTC)"
           
-          # 更新英文 README
           if (Test-Path "README.md") {
               $readmeEn = Get-Content README.md -Raw
               $readmeEn = $readmeEn -replace '(?<=<!-- TIMESTAMP_START -->).*(?=<!-- TIMESTAMP_END -->)', $time
@@ -97,7 +93,6 @@ jobs:
               Set-Content README.md -Value $readmeEn -Encoding utf8
           }
           
-          # 更新中文 README
           if (Test-Path "README_ZH.md") {
               $readmeZh = Get-Content README_ZH.md -Raw
               $readmeZh = $readmeZh -replace '(?<=<!-- TIMESTAMP_START -->).*(?=<!-- TIMESTAMP_END -->)', $time
@@ -109,9 +104,11 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md README_ZH.md
+          git add README.md README_ZH.md results/
+          
           if ! git diff --cached --quiet; then
-            git commit -m "chore: update bilingual status logs [skip ci]"
+            git commit -m "chore: auto-update status [skip ci]"
+            git pull --rebase origin master || git pull --rebase origin main
             git push
           else
             echo "No changes to commit"
