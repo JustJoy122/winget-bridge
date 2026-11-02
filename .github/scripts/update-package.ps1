@@ -65,10 +65,21 @@ if ($currentVersion -eq "0.0.0") {
 # 5. 下载 Komac 并提交更新
 Write-Host "New version detected! Submitting PR..."
 
-# 使用 curl.exe 替代 Invoke-WebRequest 以完美处理 GitHub 重定向
-curl.exe -L -s -o komac.exe https://github.com/russellbanks/Komac/releases/latest/download/komac-x86_64-pc-windows-msvc.exe
+# 通过 API 获取 Komac 最新版的真实下载链接，避开重定向陷阱
+$komacApiUrl = "https://api.github.com/repos/russellbanks/Komac/releases/latest"
+$komacRelease = Invoke-RestMethod -Uri $komacApiUrl -Headers @{ "User-Agent" = "Winget-Bridge-Action" }
+$komacAsset = $komacRelease.assets | Where-Object { $_.name -match "windows.*msvc.*\.exe" } | Select-Object -First 1
+if (-not $komacAsset) {
+    Write-Error "Cannot find Komac windows executable in latest release."
+    exit 1
+}
 
-# 调用 Komac（注意 --urls 参数传入的是逗号分隔的字符串）
+$komacUrl = $komacAsset.browser_download_url
+Write-Host "Downloading Komac from: $komacUrl"
+Invoke-WebRequest -Uri $komacUrl -OutFile komac.exe
+
+# 调用 Komac
+Write-Host "Running Komac update..."
 ./komac.exe update $PackageId `
     --version $latestVersion `
     --urls "$downloadUrls" `
