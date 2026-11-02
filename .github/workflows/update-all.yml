@@ -67,7 +67,7 @@ jobs:
         shell: pwsh
         run: |
           $results = Get-ChildItem -Path "results/*.json" | ForEach-Object { Get-Content $_.FullName | ConvertFrom-Json }
-          
+
           # 生成英文表格
           $tableEn = "| Package | Version | Status | PR Link |`n| --- | --- | --- | --- |`n"
           # 生成中文表格
@@ -75,16 +75,17 @@ jobs:
           
           foreach ($r in $results) {
               $link = if ($r.PRLink) { "[View PR]($($r.PRLink))" } else { "-" }
-              # 英文状态映射
+              # 英文状态映射 (新增了 ⚠️ 的英文翻译)
               $statusEn = switch ($r.Status) {
                   "✅ 已是最新" { "✅ Up to date" }
                   "⏳ PR 等待审核" { "⏳ PR Pending" }
                   "🚀 已自动提交 PR" { "🚀 PR Submitted" }
+                  "⚠️ PR 提交可能失败" { "⚠️ Submission Failed" }
                   default { $r.Status }
               }
               $tableEn += "| $($r.PackageId) | $($r.Version) | $statusEn | $link |`n"
               $tableZh += "| $($r.PackageId) | $($r.Version) | $($r.Status) | $link |`n"
-          }
+          }          
           
           $time = Get-Date -Format "yyyy-MM-dd HH:mm:ss (UTC)"
           
