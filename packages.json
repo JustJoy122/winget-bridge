@@ -13,5 +13,10 @@
     "id": "AnywhereLabs.DSHDesktop",
     "repo": "anywhere-labs/dsh-desktop",
     "assetRegex": "DSH-NEXT-.*-x64-Setup\\.exe$"
+  },
+  {
+    "id": "Tianyu199509.DeskBox",
+    "repo": "Tianyu199509/DeskBox",
+    "assetRegex": "DeskBox_Setup_.*_(x64|arm64)\\.exe$"
   }
 ]
