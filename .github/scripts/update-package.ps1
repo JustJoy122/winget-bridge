@@ -54,14 +54,14 @@ if ($latestVersion -eq $currentVersion) {
     $status = "✅ 已是最新"
     $newVersion = $currentVersion
 } else {
-    # 4.1 检查是否已有你提交的开放 PR
-    $myUsername = $env:GITHUB_REPOSITORY_OWNER
-    $searchQuery = "repo:microsoft/winget-pkgs is:pr is:open author:$myUsername $PackageId in:title"
+    # 4.1 检查是否有任何处于 Open 状态的 PR（不管是谁提的）
+    # 移除 author 过滤，只要这个包有 open PR 就等它
+    $searchQuery = "repo:microsoft/winget-pkgs is:pr is:open $PackageId in:title"
     $searchUrl = "https://api.github.com/search/issues?q=$([uri]::EscapeDataString($searchQuery))"
     $searchResult = Invoke-RestMethod -Uri $searchUrl -Headers $headers
 
     if ($searchResult.total_count -gt 0) {
-        Write-Host "Found existing open PR. Skipping."
+        Write-Host "Found existing open PR. Skipping to avoid duplication."
         $status = "⏳ PR 等待审核"
         $prLink = $searchResult.items[0].html_url
     } else {
@@ -108,4 +108,14 @@ $resultData = @{
     PRLink = $prLink
     Timestamp = (Get-Date -Format "yyyy-MM-dd HH:mm:ss")
 }
+
+# 加入状态比对逻辑，防止高频轮询时产生无意义的 Commit
+if (Test-Path $resultFile) {
+    $oldData = Get-Content $resultFile -Raw | ConvertFrom-Json
+    if ($oldData.Version -eq $resultData.Version -and $oldData.Status -eq $resultData.Status) {
+        Write-Host "State unchanged. Skipping status file update."
+        exit 0
+    }
+}
+
 $resultData | ConvertTo-Json | Out-File -FilePath $resultFile -Encoding utf8
