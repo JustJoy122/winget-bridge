@@ -19,14 +19,16 @@ $release = Invoke-RestMethod -Uri $releaseUrl -Headers $headers
 $latestVersion = $release.tag_name -replace '^v', '' # 去除开头的 'v'
 Write-Host "Upstream latest version: $latestVersion"
 
-# 2. 从 Assets 中提取目标安装包的 URL
-$asset = $release.assets | Where-Object { $_.name -match $AssetRegex } | Select-Object -First 1
-if (-not $asset) {
+# 2. 从 Assets 中提取目标安装包的 URL（支持多架构）
+$assets = $release.assets | Where-Object { $_.name -match $AssetRegex }
+if (-not $assets) {
     Write-Error "Cannot find asset matching regex: $AssetRegex"
     exit 1
 }
-$downloadUrl = $asset.browser_download_url
-Write-Host "Installer URL: $downloadUrl"
+
+# 将所有匹配的 URL 用逗号拼接起来
+$downloadUrls = ($assets | ForEach-Object { $_.browser_download_url }) -join ","
+Write-Host "Installer URLs: $downloadUrls"
 
 # 3. 获取 winget-pkgs 仓库中的当前版本
 $manifestPath = $PackageId.Split('.')[0].ToLower() + "/" + $PackageId.Split('.')[1]
@@ -57,9 +59,9 @@ if ($currentVersion -eq "0.0.0") {
 Write-Host "New version detected! Submitting PR..."
 Invoke-WebRequest -Uri "https://github.com/russellbanks/Komac/releases/latest/download/komac-x86_64-pc-windows-msvc.exe" -OutFile komac.exe
 
-# 调用 Komac
+# 调用 Komac（注意 --urls 参数传入的是逗号分隔的字符串）
 ./komac.exe update $PackageId `
     --version $latestVersion `
-    --urls $downloadUrl `
+    --urls "$downloadUrls" `
     --token $env:WINGET_TOKEN `
     --submit
