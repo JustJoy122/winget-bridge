@@ -12,7 +12,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - id: set-matrix
         run: |
           JSON=$(cat packages.json | jq -c .)
@@ -27,7 +27,7 @@ jobs:
       fail-fast: false
     name: Update ${{ matrix.id }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       
       - name: Create results dir
         run: mkdir results
@@ -52,8 +52,10 @@ jobs:
   update-readme:
     needs: update-packages
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       
       - name: Download all results
         uses: actions/download-artifact@v4
