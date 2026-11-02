@@ -31,8 +31,15 @@ $downloadUrls = ($assets | ForEach-Object { $_.browser_download_url }) -join ","
 Write-Host "Installer URLs: $downloadUrls"
 
 # 3. 获取 winget-pkgs 仓库中的当前版本
-$manifestPath = $PackageId.Split('.')[0].ToLower() + "/" + $PackageId.Split('.')[1]
+$parts = $PackageId.Split('.')
+$publisher = $parts[0]
+$packageName = $parts[1]
+# 获取发布者的首字母并转小写，这是 winget-pkgs 的目录规范
+$firstLetter = $publisher.Substring(0, 1).ToLower()
+
+$manifestPath = "$firstLetter/$publisher/$packageName"
 $wingetApiUrl = "https://api.github.com/repos/microsoft/winget-pkgs/contents/manifests/$manifestPath"
+
 try {
     $manifests = Invoke-RestMethod -Uri $wingetApiUrl -Headers $headers
     # 过滤出版本文件夹，按版本号排序取最大值
