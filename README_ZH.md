@@ -2,18 +2,29 @@
 
 **简体中文** | [English](README.md)
 
-一个自动化的 GitHub Actions 桥接仓库，使用 [Komac](https://github.com/russellbanks/Komac) 将上游 GitHub 发布同步到 Microsoft WinGet 包仓库。
+一个全自动化的 GitHub Actions 桥接仓库，旨在将上游 GitHub 发布同步到 Microsoft WinGet 包仓库。
 
-本项目作为一个集中管理多个开源 Windows 软件更新的中继站。你不再需要每次开发者发布新版本时手动创建和提交 WinGet 清单，本仓库会自动检测上游更新，并向 [microsoft/winget-pkgs](https://github.com/microsoft/winget-pkgs) 仓库发起 Pull Request。
+本项目作为一个集中管理多个开源 Windows 软件更新的中继站。你不再需要每次开发者发布新版本时手动提交 WinGet 清单，本仓库会自动检测更新、防重复提交，并向主仓库发起 Pull Request。
 
-## ✨ 核心特性
-- **全自动流程：** 每日自动检查更新，并向 `winget-pkgs` 自动提交 PR。
-- **单仓库架构 (Monorepo)：** 集中管理所有追踪的软件包。
-- **矩阵并发策略：** 多个包同时独立处理，互不干扰。
-- **配置驱动：** 添加新包只需在 JSON 配置中加一行，无需改动核心代码。
+## 📊 自动化状态面板
+
+**最后检查时间：** <!-- TIMESTAMP_START -->等待首次运行<!-- TIMESTAMP_END -->
+
+<!-- TABLE_START -->
+| 软件包 | 版本 | 状态 | PR 链接 |
+| --- | --- | --- | --- |
+| 等待首次运行... | - | - | - |
+<!-- TABLE_END -->
+
+## ✨ 核心机制
+- **全自动闭环：** 每日定时触发，利用 [Komac](https://github.com/russellbanks/Komac) 自动提交更新。
+- **防重复提交：** 内置智能查重逻辑，若该包已有处于 Open 状态的 PR，将自动跳过，避免骚扰审核员。
+- **并发与隔离：** 使用 GitHub Actions Matrix 策略，多包同时独立处理，互不干扰。
+- **状态自动回写：** 运行结束后，自动将最新时间戳和包状态更新至本 README，同时防止仓库触发 60 天休眠。
+- **单仓库架构：** 只需在 JSON 配置中添加一行，即可纳管新软件。
 
 ## 🚀 如何添加新的追踪包
-要开始追踪新软件，只需编辑根目录下的 `packages.json` 文件，并在数组中添加新对象：
+要开始追踪新软件，请编辑根目录下的 `packages.json` 文件，并在数组中添加新对象。写法如下：
 ```json
 [
   {
@@ -23,16 +34,15 @@
   }
 ]
 ```
-- **id**: 在 WinGet 中的唯一包标识符（例如 `AstralSightStudios.AstroBox`）。
+- **id**: 在 WinGet 中的唯一包标识符（如 `AstralSightStudios.AstroBox`）。
 - **repo**: 上游 GitHub 仓库地址（`用户名/仓库名`）。
-- **assetRegex**: 用于匹配 GitHub Release 中特定安装包文件名的正则表达式。
+- **assetRegex**: 匹配 GitHub Release 资产的正则表达式。
 
-*注意：该包必须已经存在于 `winget-pkgs` 主仓库中（首次提交必须手动完成）。*
+*注意：该包必须已经存在于 `winget-pkgs` 主仓库中（首次提交需手动完成）。*
 
 ## ⚙️ 配置要求
-1. 在 GitHub 上创建一个带有 `public_repo` 权限的 Classic Personal Access Token (经典 PAT)。
-2. 进入本仓库的 **Settings -> Secrets and variables -> Actions**。
-3. 新建一个名为 `WINGET_TOKEN` 的 Secret，填入你的 Token。
+1. 创建一个带有 `public_repo` 权限的 Classic PAT。
+2. 在仓库 **Settings -> Secrets and variables -> Actions** 中新建名为 `WINGET_TOKEN` 的 Secret。
 
 ## 📄 开源协议
 本仓库基于 MIT License 开源。
