@@ -65,12 +65,15 @@ if ($currentVersion -eq "0.0.0") {
 # 5. 下载 Komac 并提交更新
 Write-Host "New version detected! Submitting PR..."
 
-# 通过 API 获取 Komac 最新版的真实下载链接，避开重定向陷阱
+# 通过 API 获取 Komac 最新版的真实下载链接
 $komacApiUrl = "https://api.github.com/repos/russellbanks/Komac/releases/latest"
 $komacRelease = Invoke-RestMethod -Uri $komacApiUrl -Headers @{ "User-Agent" = "Winget-Bridge-Action" }
-$komacAsset = $komacRelease.assets | Where-Object { $_.name -match "windows.*msvc.*\.exe" } | Select-Object -First 1
+
+# 注意这里：严格匹配 x86_64，过滤掉 aarch64 (ARM64) 和 i686 (32位)
+$komacAsset = $komacRelease.assets | Where-Object { $_.name -match "x86_64-pc-windows-msvc\.exe$" } | Select-Object -First 1
+
 if (-not $komacAsset) {
-    Write-Error "Cannot find Komac windows executable in latest release."
+    Write-Error "Cannot find Komac x86_64 executable."
     exit 1
 }
 
