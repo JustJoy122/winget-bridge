@@ -12,6 +12,6 @@
   {
     "id": "AnywhereLabs.DSHDesktop",
     "repo": "anywhere-labs/dsh-desktop",
-    "assetRegex": "DSH-NEXT_.*-x64-Setup\\.exe$"
+    "assetRegex": "DSH-NEXT-.*-x64-Setup\\.exe$"
   }
 ]
