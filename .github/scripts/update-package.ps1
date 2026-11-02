@@ -64,7 +64,9 @@ if ($currentVersion -eq "0.0.0") {
 
 # 5. 下载 Komac 并提交更新
 Write-Host "New version detected! Submitting PR..."
-Invoke-WebRequest -Uri "https://github.com/russellbanks/Komac/releases/latest/download/komac-x86_64-pc-windows-msvc.exe" -OutFile komac.exe
+
+# 使用 curl.exe 替代 Invoke-WebRequest 以完美处理 GitHub 重定向
+curl.exe -L -s -o komac.exe https://github.com/russellbanks/Komac/releases/latest/download/komac-x86_64-pc-windows-msvc.exe
 
 # 调用 Komac（注意 --urls 参数传入的是逗号分隔的字符串）
 ./komac.exe update $PackageId `
