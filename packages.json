@@ -3,5 +3,10 @@
     "id": "AstralSightStudios.AstroBox",
     "repo": "AstralSightStudios/AstroBox-NG",
     "assetRegex": "_x64_zh-CN\\.msi$"
+  },
+  {
+    "id": "luolangaga.tubatools",
+    "repo": "luolangaga/tubatools",
+    "assetRegex": "TubaWinUi3_Setup_.*_(x64|arm64)\\.exe$"
   }
 ]
