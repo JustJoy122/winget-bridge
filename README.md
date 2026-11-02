@@ -8,13 +8,14 @@ This repository acts as a centralized maintenance hub for multiple open-source W
 
 ## 📊 Automation Status Dashboard
 
-**Last Checked:** <!-- TIMESTAMP_START -->2026-11-02 05:44:20 (UTC)<!-- TIMESTAMP_END -->
+**Last Checked:** <!-- TIMESTAMP_START -->2026-11-02 12:48:54 (UTC)<!-- TIMESTAMP_END -->
 
 <!-- TABLE_START -->
 | Package | Version | Status | PR Link |
 | --- | --- | --- | --- |
+| AnywhereLabs.DSHDesktop | 2.0.21-next | ⚠️ PR 提交可能失败 | - |
 | AstralSightStudios.AstroBox | 2.2.5 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/467853) |
-| luolangaga.tubatools | 1.8.1 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/468454) |
+| luolangaga.tubatools | 1.8.1 | ✅ Up to date | - |
 
 <!-- TABLE_END -->
 
@@ -48,5 +49,6 @@ To start tracking new software, edit the `packages.json` file in the root direct
 
 ## 📄 License
 This repository is licensed under the MIT License.
+
 
 

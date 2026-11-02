@@ -8,13 +8,14 @@
 
 ## 📊 自动化状态面板
 
-**最后检查时间：** <!-- TIMESTAMP_START -->2026-11-02 05:44:20 (UTC)<!-- TIMESTAMP_END -->
+**最后检查时间：** <!-- TIMESTAMP_START -->2026-11-02 12:48:54 (UTC)<!-- TIMESTAMP_END -->
 
 <!-- TABLE_START -->
 | 软件包 | 版本 | 状态 | PR 链接 |
 | --- | --- | --- | --- |
+| AnywhereLabs.DSHDesktop | 2.0.21-next | ⚠️ PR 提交可能失败 | - |
 | AstralSightStudios.AstroBox | 2.2.5 | ⏳ PR 等待审核 | [View PR](https://github.com/microsoft/winget-pkgs/pull/467853) |
-| luolangaga.tubatools | 1.8.1 | ⏳ PR 等待审核 | [View PR](https://github.com/microsoft/winget-pkgs/pull/468454) |
+| luolangaga.tubatools | 1.8.1 | ✅ 已是最新 | - |
 
 <!-- TABLE_END -->
 
@@ -48,5 +49,6 @@
 
 ## 📄 开源协议
 本仓库基于 MIT License 开源。
+
 
 
