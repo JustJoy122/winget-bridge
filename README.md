@@ -8,13 +8,15 @@ This repository acts as a centralized maintenance hub for multiple open-source W
 
 ## 📊 Automation Status Dashboard
 
-**Last Checked:** <!-- TIMESTAMP_START -->2026-11-03 08:11:48 (UTC)<!-- TIMESTAMP_END -->
+**Last Checked:** <!-- TIMESTAMP_START -->2026-11-03 08:21:06 (UTC)<!-- TIMESTAMP_END -->
 
 <!-- TABLE_START -->
 | Package | Version | Status | PR Link |
 | --- | --- | --- | --- |
 | AnywhereLabs.DSHDesktop | 2.0.21-next | ✅ Up to date | - |
 | AstralSightStudios.AstroBox | 2.2.5 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/467853) |
+| LocalSend.LocalSend.CLI | 1.18.2 | ✅ Up to date | - |
+| LocalSend.LocalSend | 1.18.2 | ✅ Up to date | - |
 | luolangaga.tubatools | 1.8.1 | ✅ Up to date | - |
 | Nlitesoft.NTLite | 2026.10.12522 | ✅ Up to date | - |
 | Tianyu199509.DeskBox | 1.5.9 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/459856) |
@@ -51,6 +53,7 @@ To start tracking new software, edit the `packages.json` file in the root direct
 
 ## 📄 License
 This repository is licensed under the MIT License.
+
 
 
 
