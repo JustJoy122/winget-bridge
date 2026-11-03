@@ -18,6 +18,12 @@
     "assetRegex": "DSH-NEXT-.*-x64-Setup\\.exe$"
   },
   {
+    "id": "AnywhereLabs.AgentsAnywhere",
+    "type": "github",
+    "repo": "anywhere-labs/Agents-Anywhere",
+    "assetRegex": "Agents\\.Anywhere\\.Setup\\..*\\.exe$"
+  },
+  {
     "id": "Tianyu199509.DeskBox",
     "type": "github",
     "repo": "Tianyu199509/DeskBox",
