@@ -1,33 +1,79 @@
 param (
     [string]$PackageId,
-    [string]$TargetRepo,
-    [string]$AssetRegex
+    [string]$Type,          # 新增：类型 (github 或 fixed_url)
+    [string]$TargetRepo,    # 用于 github 类型
+    [string]$AssetRegex,    # 用于 github 类型
+    [string]$Urls           # 用于 fixed_url 类型 (逗号分隔的带架构链接，如: "url1|x64,url2|x86")
 )
 
 $ErrorActionPreference = "Stop"
-Write-Host "Checking updates for: $PackageId"
+Write-Host "Checking updates for: $PackageId (Type: $Type)"
 
-# 1. 获取上游最新 Release
 $headers = @{
     "Authorization" = "Bearer $env:WINGET_TOKEN"
     "User-Agent" = "Winget-Bridge-Action"
 }
-$releaseUrl = "https://api.github.com/repos/$TargetRepo/releases/latest"
-$release = Invoke-RestMethod -Uri $releaseUrl -Headers $headers
 
-$latestVersion = $release.tag_name -replace '^v', ''
-Write-Host "Upstream latest version: $latestVersion"
+$latestVersion = ""
+$downloadUrls = @()
 
-# 2. 从 Assets 中提取目标安装包的 URL
-$assets = $release.assets | Where-Object { $_.name -match $AssetRegex }
-if (-not $assets) {
-    Write-Error "Cannot find asset matching regex: $AssetRegex"
+# ==========================================
+# 1 & 2. 获取上游最新版本与下载链接
+# ==========================================
+if ($Type -eq "github") {
+    # --- GitHub 获取逻辑 ---
+    $releaseUrl = "https://api.github.com/repos/$TargetRepo/releases/latest"
+    $release = Invoke-RestMethod -Uri $releaseUrl -Headers $headers
+
+    $latestVersion = $release.tag_name -replace '^v', ''
+    Write-Host "Upstream latest version: $latestVersion"
+
+    $assets = $release.assets | Where-Object { $_.name -match $AssetRegex }
+    if (-not $assets) {
+        Write-Error "Cannot find asset matching regex: $AssetRegex"
+        exit 1
+    }
+    
+    foreach ($asset in $assets) {
+        # 智能推断架构
+        $arch = "x64"
+        if ($asset.name -match "arm64|aarch64") { $arch = "arm64" }
+        elseif ($asset.name -match "x86|ia32|32bit") { $arch = "x86" }
+        
+        $downloadUrls += "$($asset.browser_download_url)|$arch"
+    }
+} elseif ($Type -eq "fixed_url") {
+    # --- 固定 URL 获取逻辑 ---
+    $urlArray = $Urls.Split(",")
+    $downloadUrls = $urlArray
+    
+    # 下载第一个链接（通常是 x64）来读取真实版本号
+    $firstUrl = $urlArray[0].Split("|")[0]
+    $tempFile = "temp_setup.exe"
+    Write-Host "Downloading fixed URL to extract version: $firstUrl"
+    Invoke-WebRequest -Uri $firstUrl -OutFile $tempFile
+    
+    # 读取 exe 内部的产品版本号
+    $exeVersion = (Get-Item $tempFile).VersionInfo.ProductVersion
+    if (-not $exeVersion) {
+        Write-Error "Failed to extract version from fixed URL executable."
+        exit 1
+    }
+    
+    # 清理版本号字符串（有些会带逗号或多余空格，如 "1, 2, 3" 转为 "1.2.3"）
+    $latestVersion = $exeVersion -replace ',', '.' -replace ' ', ''
+    Write-Host "Upstream latest version (extracted from EXE): $latestVersion"
+    Remove-Item $tempFile -Force
+} else {
+    Write-Error "Unknown Type: $Type"
     exit 1
 }
-$downloadUrls = $assets | ForEach-Object { $_.browser_download_url }
-Write-Host "Installer URLs found: $($downloadUrls -join ', ')"
 
-# 3. 获取 winget-pkgs 仓库中的所有版本文件夹
+Write-Host "Installer URLs: $($downloadUrls -join ', ')"
+
+# ==========================================
+# 3. 获取 winget-pkgs 仓库中的当前版本
+# ==========================================
 $parts = $PackageId.Split('.')
 $publisher = $parts[0]
 $packageName = $parts[1]
@@ -55,12 +101,13 @@ if ($existingVersions.Count -gt 0) {
 
 $isUpToDate = $existingVersions -contains $latestVersion
 
-# 初始化结果变量
+# ==========================================
+# 4. 查重与提交逻辑
+# ==========================================
 $status = "Unknown"
 $prLink = ""
 $newVersion = $latestVersion
 
-# 4. 查重与提交逻辑
 if ($isUpToDate) {
     Write-Host "Already up to date. Found version $latestVersion in winget-pkgs."
     $status = "✅ 已是最新"
@@ -68,7 +115,7 @@ if ($isUpToDate) {
 } else {
     Write-Host "Version $latestVersion not found in winget-pkgs. Checking for open PRs..."
     
-    # 4.1 检查是否已有开放 PR
+    # 4.1 检查是否已有任何人的开放 PR
     $searchQuery = "repo:microsoft/winget-pkgs is:pr is:open $PackageId"
     $searchUrl = "https://api.github.com/search/issues?q=$([uri]::EscapeDataString($searchQuery))"
     $searchResult = Invoke-RestMethod -Uri $searchUrl -Headers $headers
@@ -79,7 +126,6 @@ if ($isUpToDate) {
         Write-Host "Found existing open PR. Skipping."
         $status = "⏳ PR 等待审核"
         $prLink = $validPr.html_url
-        $newVersion = $latestVersion
     } else {
         Write-Host "No open PRs found. Submitting new PR..."
         
@@ -93,9 +139,9 @@ if ($isUpToDate) {
         
         # 构建参数并执行
         $komacArgs = @("update", $PackageId, "--version", $latestVersion, "--token", $env:WINGET_TOKEN, "--submit")
-        foreach ($url in $downloadUrls) {
+        foreach ($urlInfo in $downloadUrls) {
             $komacArgs += "--urls"
-            $komacArgs += $url
+            $komacArgs += $urlInfo  # 传入带有 |x64 或 |x86 的完整字符串
         }
         
         $komacOutput = & ./komac.exe $komacArgs 2>&1 | Out-String
@@ -115,8 +161,15 @@ if ($isUpToDate) {
     }
 }
 
+# ==========================================
 # 5. 写入状态文件
-$resultFile = "results/$($PackageId).json"
+# ==========================================
+$resultDir = "results"
+if (-not (Test-Path $resultDir)) {
+    New-Item -ItemType Directory -Path $resultDir | Out-Null
+}
+
+$resultFile = "$resultDir/$($PackageId).json"
 $resultData = @{
     PackageId = $PackageId
     Version = $newVersion
@@ -127,10 +180,14 @@ $resultData = @{
 
 # 状态比对：如果没有变化，就不写文件（避免高频轮询产生无意义的提交）
 if (Test-Path $resultFile) {
-    $oldData = Get-Content $resultFile -Raw | ConvertFrom-Json
-    if ($oldData.Version -eq $resultData.Version -and $oldData.Status -eq $resultData.Status -and $oldData.PRLink -eq $resultData.PRLink) {
-        Write-Host "State unchanged. Skipping status file update."
-        exit 0
+    try {
+        $oldData = Get-Content $resultFile -Raw | ConvertFrom-Json
+        if ($oldData.Version -eq $resultData.Version -and $oldData.Status -eq $resultData.Status -and $oldData.PRLink -eq $resultData.PRLink) {
+            Write-Host "State unchanged. Skipping status file update."
+            exit 0
+        }
+    } catch {
+        # 忽略解析旧的损坏 JSON
     }
 }
 
