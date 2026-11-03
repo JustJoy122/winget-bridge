@@ -27,6 +27,7 @@
     "id": "NTLite.NTLite",
     "type": "fixed_url",
     "urls": "https://downloads.ntlite.com/files/NTLite_setup_x64.exe|x64,https://downloads.ntlite.com/files/NTLite_setup_x86_legacy.exe|x86",
-    "releaseNotesUrl": "https://www.ntlite.com/changelog/"
+    "releaseNotesUrl": "https://www.ntlite.com/changelog/",
+    "versionRegex": "^(\\d+\\.\\d+\\.\\d+)"
   }
 ]
