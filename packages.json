@@ -26,9 +26,6 @@
   {
     "id": "NTLite.NTLite",
     "type": "fixed_url",
-    "urls": [
-      "https://downloads.ntlite.com/files/NTLite_setup_x64.exe|x64",
-      "https://downloads.ntlite.com/files/NTLite_setup_x86_legacy.exe|x86"
-    ]
+    "urls": "https://downloads.ntlite.com/files/NTLite_setup_x64.exe|x64,https://downloads.ntlite.com/files/NTLite_setup_x86_legacy.exe|x86"
   }
 ]
