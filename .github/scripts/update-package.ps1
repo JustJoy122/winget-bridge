@@ -34,9 +34,15 @@ if ($Type -eq "github") {
     if (-not $assets) { Write-Error "Cannot find asset matching regex: $AssetRegex"; exit 1 }
     
     foreach ($asset in $assets) {
+        # 💡 修复架构识别优先级，避免 x86-64 被误判为 32 位
         $arch = "x64"
-        if ($asset.name -match "arm64|aarch64") { $arch = "arm64" }
-        elseif ($asset.name -match "x86|ia32|32bit") { $arch = "x86" }
+        if ($asset.name -match "arm64|aarch64|arm-64") { 
+            $arch = "arm64" 
+        } elseif ($asset.name -match "x86-64|x86_64|amd64|x64") {
+            $arch = "x64"
+        } elseif ($asset.name -match "x86|ia32|32bit|i386") { 
+            $arch = "x86" 
+        }
         $downloadUrls += "$($asset.browser_download_url)|$arch"
     }
 } elseif ($Type -eq "fixed_url") {
@@ -52,7 +58,6 @@ if ($Type -eq "github") {
     $exeVersion = (Get-Item $tempFile).VersionInfo.ProductVersion
     if (-not $exeVersion) { Write-Error "Failed to extract version from fixed URL executable."; exit 1 }
     
-    # 基础清理
     $rawVersion = $exeVersion -replace ',', '.' -replace ' ', ''
     
     if ($VersionRegex) {
@@ -70,7 +75,6 @@ if ($Type -eq "github") {
         if ($segments.Length -eq 4 -and $segments[3] -eq '0') {
             $latestVersion = $segments[0..2] -join '.'
         }
-        Write-Host "Default cleaning logic applied."
     }
     
     Write-Host "Final parsed version: $latestVersion"
@@ -157,7 +161,6 @@ if ($isUpToDate) {
         $komacOutput = & ./komac.exe $komacArgs 2>&1 | Out-String
         Write-Host $komacOutput
         
-        # 直接从输出提取 PR 链接，避免 API 延迟
         if ($komacOutput -match 'https://github\.com/microsoft/winget-pkgs/pull/\d+') {
             $prLink = $Matches[0]
             $status = "🚀 已自动提交 PR"
