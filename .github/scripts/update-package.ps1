@@ -4,7 +4,8 @@ param (
     [string]$TargetRepo,
     [string]$AssetRegex,
     [string]$Urls,
-    [string]$ReleaseNotesUrl # 💡 新增：接收更新日志链接
+    [string]$ReleaseNotesUrl,
+    [string]$VersionRegex
 )
 
 $ErrorActionPreference = "Stop"
@@ -18,13 +19,16 @@ $headers = @{
 $latestVersion = ""
 $downloadUrls = @()
 
-# 1 & 2. 获取版本与链接
+# 1 & 2. 获取上游最新版本与下载链接
 if ($Type -eq "github") {
+    # --- GitHub 获取逻辑 ---
     $releaseUrl = "https://api.github.com/repos/$TargetRepo/releases/latest"
     $release = Invoke-RestMethod -Uri $releaseUrl -Headers $headers
+
     $latestVersion = $release.tag_name -replace '^v', ''
-    
-    if (-not $ReleaseNotesUrl) { $ReleaseNotesUrl = $release.html_url } # 自动获取 GitHub Release 链接
+    Write-Host "Upstream latest version: $latestVersion"
+
+    if (-not $ReleaseNotesUrl) { $ReleaseNotesUrl = $release.html_url }
 
     $assets = $release.assets | Where-Object { $_.name -match $AssetRegex }
     if (-not $assets) { Write-Error "Cannot find asset matching regex: $AssetRegex"; exit 1 }
@@ -36,6 +40,7 @@ if ($Type -eq "github") {
         $downloadUrls += "$($asset.browser_download_url)|$arch"
     }
 } elseif ($Type -eq "fixed_url") {
+    # --- 固定 URL 获取逻辑 ---
     $urlArray = $Urls.Split(",")
     $downloadUrls = $urlArray
     
@@ -45,15 +50,39 @@ if ($Type -eq "github") {
     Invoke-WebRequest -Uri $firstUrl -OutFile $tempFile
     
     $exeVersion = (Get-Item $tempFile).VersionInfo.ProductVersion
-    if (-not $exeVersion) { Write-Error "Failed to extract version"; exit 1 }
+    if (-not $exeVersion) { Write-Error "Failed to extract version from fixed URL executable."; exit 1 }
     
-    # 💡 修复 1：清理版本号，并强制去掉末尾的 .0
-    $latestVersion = $exeVersion -replace ',', '.' -replace ' ', '' -replace '\.0$', ''
-    Write-Host "Upstream latest version: $latestVersion"
+    # 基础清理
+    $rawVersion = $exeVersion -replace ',', '.' -replace ' ', ''
+    
+    if ($VersionRegex) {
+        if ($rawVersion -match $VersionRegex) {
+            if ($Matches.Count -gt 1) { $latestVersion = $Matches[1] }
+            else { $latestVersion = $Matches[0] }
+            Write-Host "Custom Regex applied. Extracted: $latestVersion"
+        } else {
+            Write-Error "VersionRegex '$VersionRegex' did not match raw version '$rawVersion'"
+            exit 1
+        }
+    } else {
+        $latestVersion = $rawVersion
+        $segments = $latestVersion.Split('.')
+        if ($segments.Length -eq 4 -and $segments[3] -eq '0') {
+            $latestVersion = $segments[0..2] -join '.'
+        }
+        Write-Host "Default cleaning logic applied."
+    }
+    
+    Write-Host "Final parsed version: $latestVersion"
     Remove-Item $tempFile -Force
+} else {
+    Write-Error "Unknown Type: $Type"
+    exit 1
 }
 
-# 3. 获取 winget 当前版本
+Write-Host "Installer URLs: $($downloadUrls -join ', ')"
+
+# 3. 获取 winget-pkgs 仓库中的当前版本
 $parts = $PackageId.Split('.')
 $publisher = $parts[0]
 $packageName = $parts[1]
@@ -65,18 +94,23 @@ $existingVersions = @()
 try {
     $manifests = Invoke-RestMethod -Uri $wingetApiUrl -Headers $headers
     $existingVersions = $manifests | Where-Object { $_.type -eq "dir" } | Select-Object -ExpandProperty name
-} catch { }
+} catch {
+    Write-Host "Package manifest directory not found."
+}
 
 $latestInWinget = "0.0.0"
 if ($existingVersions.Count -gt 0) {
     $latestInWinget = $existingVersions | Sort-Object { 
-        try { [version]($_ -replace '[^0-9\.]', '') } catch { [version]'0.0.0' }
+        try {
+            $vStr = $_ -replace '[^0-9\.]', ''
+            if ($vStr) { [version]$vStr } else { [version]'0.0.0' }
+        } catch { [version]'0.0.0' }
     } -Descending | Select-Object -First 1
 }
 
 $isUpToDate = $existingVersions -contains $latestVersion
 
-# 4. 查重与提交
+# 4. 查重与提交逻辑
 $status = "Unknown"
 $prLink = ""
 $newVersion = $latestVersion
@@ -86,6 +120,8 @@ if ($isUpToDate) {
     $status = "✅ 已是最新"
     $newVersion = $latestInWinget 
 } else {
+    Write-Host "Version $latestVersion not found in winget-pkgs. Checking for open PRs..."
+    
     $searchQuery = "repo:microsoft/winget-pkgs is:pr is:open $PackageId"
     $searchUrl = "https://api.github.com/search/issues?q=$([uri]::EscapeDataString($searchQuery))"
     $searchResult = Invoke-RestMethod -Uri $searchUrl -Headers $headers
@@ -93,6 +129,7 @@ if ($isUpToDate) {
     $validPr = $searchResult.items | Where-Object { $_.title -match [regex]::Escape($PackageId) } | Select-Object -First 1
 
     if ($validPr) {
+        Write-Host "Found existing open PR. Skipping."
         $status = "⏳ PR 等待审核"
         $prLink = $validPr.html_url
     } else {
@@ -101,11 +138,12 @@ if ($isUpToDate) {
         $komacApiUrl = "https://api.github.com/repos/russellbanks/Komac/releases/latest"
         $komacRelease = Invoke-RestMethod -Uri $komacApiUrl -Headers $headers
         $komacAsset = $komacRelease.assets | Where-Object { $_.name -match "x86_64-pc-windows-msvc\.exe$" } | Select-Object -First 1
+        if (-not $komacAsset) { Write-Error "Cannot find Komac x86_64 executable."; exit 1 }
+        
         Invoke-WebRequest -Uri $komacAsset.browser_download_url -OutFile komac.exe
         
         $komacArgs = @("update", $PackageId, "--version", $latestVersion, "--token", $env:WINGET_TOKEN, "--submit")
         
-        # 💡 修复 2：传入 ReleaseNotesUrl
         if ($ReleaseNotesUrl) {
             $komacArgs += "--release-notes-url"
             $komacArgs += $ReleaseNotesUrl
@@ -119,7 +157,7 @@ if ($isUpToDate) {
         $komacOutput = & ./komac.exe $komacArgs 2>&1 | Out-String
         Write-Host $komacOutput
         
-        # 💡 修复 3：直接从输出提取 PR 链接
+        # 直接从输出提取 PR 链接，避免 API 延迟
         if ($komacOutput -match 'https://github\.com/microsoft/winget-pkgs/pull/\d+') {
             $prLink = $Matches[0]
             $status = "🚀 已自动提交 PR"
@@ -129,9 +167,12 @@ if ($isUpToDate) {
     }
 }
 
-# 5. 写入状态
+# 5. 写入状态文件
 $resultDir = "results"
-if (-not (Test-Path $resultDir)) { New-Item -ItemType Directory -Path $resultDir | Out-Null }
+if (-not (Test-Path $resultDir)) {
+    New-Item -ItemType Directory -Path $resultDir | Out-Null
+}
+
 $resultFile = "$resultDir/$($PackageId).json"
 $resultData = @{
     PackageId = $PackageId
@@ -145,8 +186,10 @@ if (Test-Path $resultFile) {
     try {
         $oldData = Get-Content $resultFile -Raw | ConvertFrom-Json
         if ($oldData.Version -eq $resultData.Version -and $oldData.Status -eq $resultData.Status -and $oldData.PRLink -eq $resultData.PRLink) {
+            Write-Host "State unchanged. Skipping status file update."
             exit 0
         }
     } catch { }
 }
+
 $resultData | ConvertTo-Json | Out-File -FilePath $resultFile -Encoding utf8
