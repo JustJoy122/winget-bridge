@@ -11,7 +11,9 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v7
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
       - id: set-matrix
         run: |
           JSON=$(cat packages.json | jq -c .)
@@ -25,9 +27,11 @@ jobs:
       fail-fast: false
     name: Update ${{ matrix.id }}
     steps:
-      - uses: actions/checkout@v7
+      - name: Checkout repository
+        uses: actions/checkout@v7
       
       - name: Create results dir
+        shell: pwsh
         run: New-Item -ItemType Directory -Force -Path results
         
       - name: Process ${{ matrix.id }}
@@ -37,8 +41,10 @@ jobs:
         run: |
           ./.github/scripts/update-package.ps1 `
             -PackageId "${{ matrix.id }}" `
+            -Type "${{ matrix.type || 'github' }}" `
             -TargetRepo "${{ matrix.repo }}" `
-            -AssetRegex "${{ matrix.assetRegex }}"
+            -AssetRegex "${{ matrix.assetRegex }}" `
+            -Urls "${{ matrix.urls }}"
             
       - name: Upload result
         uses: actions/upload-artifact@v7
@@ -52,10 +58,11 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v7
+      - name: Checkout repository
+        uses: actions/checkout@v7
       
       - name: Download all results
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: results
           merge-multiple: true
