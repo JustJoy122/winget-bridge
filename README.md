@@ -8,13 +8,13 @@ This repository acts as a centralized maintenance hub for multiple open-source W
 
 ## 📊 Automation Status Dashboard
 
-**Last Checked:** <!-- TIMESTAMP_START -->2026-11-04 21:27:04 (UTC)<!-- TIMESTAMP_END -->
+**Last Checked:** <!-- TIMESTAMP_START -->2026-11-05 00:50:42 (UTC)<!-- TIMESTAMP_END -->
 
 <!-- TABLE_START -->
 | Package | Version | Status | PR Link |
 | --- | --- | --- | --- |
 | AnywhereLabs.AgentsAnywhere | 2.1.0 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/469693) |
-| AnywhereLabs.DSHDesktop | 2.0.21-next | ✅ Up to date | - |
+| AnywhereLabs.DSHDesktop | 2.0.22-next | ✅ Up to date | - |
 | AstralSightStudios.AstroBox | 2.2.5 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/467853) |
 | LocalSend.LocalSend.CLI | 1.18.2 | ✅ Up to date | - |
 | LocalSend.LocalSend | 1.18.2 | ✅ Up to date | - |
@@ -54,6 +54,7 @@ To start tracking new software, edit the `packages.json` file in the root direct
 
 ## 📄 License
 This repository is licensed under the MIT License.
+
 
 
 
