@@ -12,12 +12,6 @@
     "assetRegex": "TubaWinUi3_Setup_.*_(x64|arm64)\\.exe$"
   },
   {
-    "id": "AnywhereLabs.DSHDesktop",
-    "type": "github",
-    "repo": "anywhere-labs/dsh-desktop",
-    "assetRegex": "DSH-NEXT-.*-x64-Setup\\.exe$"
-  },
-  {
     "id": "AnywhereLabs.AgentsAnywhere",
     "type": "github",
     "repo": "anywhere-labs/Agents-Anywhere",
@@ -29,7 +23,7 @@
     "repo": "Tianyu199509/DeskBox",
     "assetRegex": "DeskBox_Setup_.*_(x64|arm64)\\.exe$"
   },
-  {
+   {
     "id": "Nlitesoft.NTLite",
     "type": "fixed_url",
     "urls": "https://downloads.ntlite.com/files/NTLite_setup_x64.exe|x64,https://downloads.ntlite.com/files/NTLite_setup_x86_legacy.exe|x86",
@@ -47,5 +41,17 @@
     "type": "github",
     "repo": "localsend/localsend",
     "assetRegex": "^LocalSend-CLI-[\\d\\.]+-windows-(x86-64|arm-64)\\.exe$"
+  },
+  {
+    "id": "valinet.ExplorerPatcher",
+    "type": "github",
+    "repo": "valinet/ExplorerPatcher",
+    "assetRegex": "^ep_setup.*\\.exe$"
+  },
+  {
+    "id": "Rainmeter.Rainmeter",
+    "type": "github",
+    "repo": "rainmeter/rainmeter",
+    "assetRegex": "^Rainmeter-.*\\.exe$"
   }
 ]
