@@ -8,7 +8,7 @@
 
 ## 📊 自动化状态面板
 
-**最后检查时间：** <!-- TIMESTAMP_START -->2026-11-08 11:07:23 (UTC)<!-- TIMESTAMP_END -->
+**最后检查时间：** <!-- TIMESTAMP_START -->2026-11-08 17:10:51 (UTC)<!-- TIMESTAMP_END -->
 
 <!-- TABLE_START -->
 | 软件包 | 版本 | 状态 | PR 链接 |
@@ -21,6 +21,7 @@
 | luolangaga.tubatools | 1.8.1 | ✅ 已是最新 | - |
 | Nlitesoft.NTLite | 2026.10.12522 | ✅ 已是最新 | - |
 | Rainmeter.Rainmeter | 4.5.28.3936 | ✅ 已是最新 | - |
+| ScottSloan.Bili23Downloader | 2.21.0 | ⏳ PR 等待审核 | [查看 PR](https://github.com/microsoft/winget-pkgs/pull/474987) |
 | Tianyu199509.DeskBox | 1.5.9 | ⏳ PR 等待审核 | [查看 PR](https://github.com/microsoft/winget-pkgs/pull/459856) |
 | valinet.ExplorerPatcher | 26100.9711.71.1 | ✅ 已是最新 | - |
 
@@ -56,6 +57,7 @@
 
 ## 📄 开源协议
 本仓库基于 MIT License 开源。
+
 
 
 
