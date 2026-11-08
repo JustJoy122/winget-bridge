@@ -1,57 +1,63 @@
 [
-  {
+    {
     "id": "AstralSightStudios.AstroBox",
     "type": "github",
     "repo": "AstralSightStudios/AstroBox-NG",
     "assetRegex": "_x64_zh-CN\\.msi$"
   },
-  {
+    {
     "id": "luolangaga.tubatools",
     "type": "github",
     "repo": "luolangaga/tubatools",
     "assetRegex": "TubaWinUi3_Setup_.*_(x64|arm64)\\.exe$"
   },
-  {
+    {
     "id": "AnywhereLabs.AgentsAnywhere",
     "type": "github",
     "repo": "anywhere-labs/Agents-Anywhere",
     "assetRegex": "Agents\\.Anywhere\\.Setup\\..*\\.exe$"
   },
-  {
+    {
     "id": "Tianyu199509.DeskBox",
     "type": "github",
     "repo": "Tianyu199509/DeskBox",
     "assetRegex": "DeskBox_Setup_.*_(x64|arm64)\\.exe$"
   },
-   {
+    {
     "id": "Nlitesoft.NTLite",
     "type": "fixed_url",
     "urls": "https://downloads.ntlite.com/files/NTLite_setup_x64.exe|x64,https://downloads.ntlite.com/files/NTLite_setup_x86_legacy.exe|x86",
     "releaseNotesUrl": "https://www.ntlite.com/changelog/",
     "versionRegex": "^(\\d+\\.\\d+\\.\\d+)"
   },
-  {
+    {
     "id": "LocalSend.LocalSend",
     "type": "github",
     "repo": "localsend/localsend",
     "assetRegex": "^LocalSend-[\\d\\.]+-windows-x86-64\\.exe$"
   },
-  {
+    {
     "id": "LocalSend.LocalSend.CLI",
     "type": "github",
     "repo": "localsend/localsend",
     "assetRegex": "^LocalSend-CLI-[\\d\\.]+-windows-(x86-64|arm-64)\\.exe$"
   },
-  {
+    {
     "id": "valinet.ExplorerPatcher",
     "type": "github",
     "repo": "valinet/ExplorerPatcher",
     "assetRegex": "^ep_setup.*\\.exe$"
   },
-  {
+    {
     "id": "Rainmeter.Rainmeter",
     "type": "github",
     "repo": "rainmeter/rainmeter",
     "assetRegex": "^Rainmeter-.*\\.exe$"
+  },
+    {
+    "id": "ScottSloan.Bili23Downloader",
+    "type": "github",
+    "repo": "ScottSloan/Bili23-Downloader",
+    "assetRegex": "Bili23-Downloader_.*_windows_x64\\.exe$"
   }
 ]
