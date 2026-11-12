@@ -1,7 +1,7 @@
 {
-  "Status": "✅ 已是最新",
-  "PRLink": "",
+  "PRLink": "https://github.com/microsoft/winget-pkgs/pull/477952",
   "PackageId": "luolangaga.tubatools",
-  "Version": "1.8.1",
-  "Timestamp": "2026-11-02 13:09:27"
+  "Status": "⏳ PR 等待审核",
+  "Timestamp": "2026-11-12 01:04:00",
+  "Version": "1.9.0"
 }

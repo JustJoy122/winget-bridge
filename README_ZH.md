@@ -8,7 +8,7 @@
 
 ## 📊 自动化状态面板
 
-**最后检查时间：** <!-- TIMESTAMP_START -->2026-11-12 00:52:36 (UTC)<!-- TIMESTAMP_END -->
+**最后检查时间：** <!-- TIMESTAMP_START -->2026-11-12 01:04:14 (UTC)<!-- TIMESTAMP_END -->
 
 <!-- TABLE_START -->
 | 软件包 | 版本 | 状态 | PR 链接 |
@@ -18,7 +18,7 @@
 | AstralSightStudios.AstroBox | 2.2.5 | ⏳ PR 等待审核 | [查看 PR](https://github.com/microsoft/winget-pkgs/pull/467853) |
 | LocalSend.LocalSend.CLI | 1.18.2 | ✅ 已是最新 | - |
 | LocalSend.LocalSend | 1.18.2 | ✅ 已是最新 | - |
-| luolangaga.tubatools | 1.8.1 | ✅ 已是最新 | - |
+| luolangaga.tubatools | 1.9.0 | ⏳ PR 等待审核 | [查看 PR](https://github.com/microsoft/winget-pkgs/pull/477952) |
 | Nlitesoft.NTLite | 2026.10.12522 | ✅ 已是最新 | - |
 | Rainmeter.Rainmeter | 4.5.28.3936 | ✅ 已是最新 | - |
 | ScottSloan.Bili23Downloader | 2.21.0 | ⏳ PR 等待审核 | [查看 PR](https://github.com/microsoft/winget-pkgs/pull/474987) |
@@ -57,6 +57,7 @@
 
 ## 📄 开源协议
 本仓库基于 MIT License 开源。
+
 
 
 
