@@ -66,24 +66,32 @@ jobs:
       - name: Download all results
         uses: actions/download-artifact@v8
         with:
-          path: results_tmp # 先下载到临时目录
+          path: results_tmp 
           merge-multiple: true
           
       - name: Flatten results directory
         shell: bash
         run: |
-          # 强行将所有子目录中的 json 提取到根目录
+          # 💡 暴力清空旧的 results 目录
+          rm -rf results
           mkdir -p results
+          
+          # 强制从 results_tmp 里把所有 json 复制过来
           find results_tmp -name "*.json" -exec cp {} results/ \;
-          echo "--- Files in results after flattening ---"
+          
+          echo "=== 最终准备提交的文件 ==="
           ls -la results/
           
       - name: Update Bilingual READMEs
         shell: pwsh
         run: |
-          # 使用了 -Recurse 以防万一，确保能读到文件
           $results = Get-ChildItem -Path "results" -Filter "*.json" -Recurse | ForEach-Object { Get-Content $_.FullName -Raw | ConvertFrom-Json }
           
+          # 打印一下读到的内容，方便在日志里排错
+          Write-Host "================ 读到的 JSON 内容 ================"
+          $results | ForEach-Object { Write-Host "$($_.PackageId): $($_.Version) - $($_.Status)" }
+          Write-Host "==================================================="
+
           $tableEn = "| Package | Version | Status | PR Link |`n| --- | --- | --- | --- |`n"
           $tableZh = "| 软件包 | 版本 | 状态 | PR 链接 |`n| --- | --- | --- | --- |`n"
           
