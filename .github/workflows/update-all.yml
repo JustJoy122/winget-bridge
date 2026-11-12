@@ -66,20 +66,23 @@ jobs:
       - name: Download all results
         uses: actions/download-artifact@v8
         with:
-          path: results_tmp
+          path: results_tmp # 先下载到临时目录
           merge-multiple: true
           
       - name: Flatten results directory
         shell: bash
         run: |
-          # 将可能嵌套的目录结构全部拍平到 results/ 下
+          # 强行将所有子目录中的 json 提取到根目录
           mkdir -p results
           find results_tmp -name "*.json" -exec cp {} results/ \;
+          echo "--- Files in results after flattening ---"
+          ls -la results/
           
       - name: Update Bilingual READMEs
         shell: pwsh
         run: |
-          $results = Get-ChildItem -Path "results/*.json" | ForEach-Object { Get-Content $_.FullName | ConvertFrom-Json }
+          # 使用了 -Recurse 以防万一，确保能读到文件
+          $results = Get-ChildItem -Path "results" -Filter "*.json" -Recurse | ForEach-Object { Get-Content $_.FullName -Raw | ConvertFrom-Json }
           
           $tableEn = "| Package | Version | Status | PR Link |`n| --- | --- | --- | --- |`n"
           $tableZh = "| 软件包 | 版本 | 状态 | PR 链接 |`n| --- | --- | --- | --- |`n"
@@ -124,7 +127,6 @@ jobs:
           
           if ! git diff --cached --quiet; then
             git commit -m "chore: auto-update status [skip ci]"
-            # 修复 master/main 分支名引起的 fatal 报错
             git pull --rebase origin main || true
             git push
           else
