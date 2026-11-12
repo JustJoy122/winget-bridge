@@ -55,6 +55,7 @@ jobs:
 
   update-readme:
     needs: update-packages
+    if: always()
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -65,8 +66,15 @@ jobs:
       - name: Download all results
         uses: actions/download-artifact@v8
         with:
-          path: results
+          path: results_tmp
           merge-multiple: true
+          
+      - name: Flatten results directory
+        shell: bash
+        run: |
+          # 将可能嵌套的目录结构全部拍平到 results/ 下
+          mkdir -p results
+          find results_tmp -name "*.json" -exec cp {} results/ \;
           
       - name: Update Bilingual READMEs
         shell: pwsh
@@ -116,7 +124,8 @@ jobs:
           
           if ! git diff --cached --quiet; then
             git commit -m "chore: auto-update status [skip ci]"
-            git pull --rebase origin master || git pull --rebase origin main
+            # 修复 master/main 分支名引起的 fatal 报错
+            git pull --rebase origin main || true
             git push
           else
             echo "No changes to commit"
