@@ -118,8 +118,6 @@ $newVersion = $latestVersion
 if ($isUpToDate) {
     Write-Host "Already up to date. Found version $latestVersion in winget-pkgs."
     $status = "✅ 已是最新"
-    # 💡 修复：直接使用 $latestVersion，不再去计算不可靠的 $latestInWinget
-    $newVersion = $latestVersion
 } else {
     Write-Host "Version $latestVersion not found in winget-pkgs. Checking for open PRs..."
     
@@ -158,7 +156,6 @@ if ($isUpToDate) {
         $komacOutput = & ./komac.exe $komacArgs 2>&1 | Out-String
         Write-Host $komacOutput
         
-        # 提取 PR 链接并追加仓库署名
         if ($komacOutput -match 'https://github\.com/microsoft/winget-pkgs/pull/(\d+)') {
             $prLink = $Matches[0]
             $prNumber = $Matches[1]
@@ -188,7 +185,7 @@ if ($isUpToDate) {
 }
 
 # ==========================================
-# 5. 写入状态文件
+# 5. 写入状态文件 (无条件覆盖)
 # ==========================================
 $resultDir = "results"
 if (-not (Test-Path $resultDir)) {
@@ -204,14 +201,5 @@ $resultData = @{
     Timestamp = (Get-Date -Format "yyyy-MM-dd HH:mm:ss")
 }
 
-if (Test-Path $resultFile) {
-    try {
-        $oldData = Get-Content $resultFile -Raw | ConvertFrom-Json
-        if ($oldData.Version -eq $resultData.Version -and $oldData.Status -eq $resultData.Status -and $oldData.PRLink -eq $resultData.PRLink) {
-            Write-Host "State unchanged. Skipping status file update."
-            exit 0
-        }
-    } catch { }
-}
-
+# 直接写入，确保每次都有最新的时间戳和状态
 $resultData | ConvertTo-Json | Out-File -FilePath $resultFile -Encoding utf8
