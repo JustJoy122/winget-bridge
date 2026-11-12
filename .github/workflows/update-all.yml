@@ -51,7 +51,8 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: result-${{ matrix.id }}
-          path: results/
+          # 💡 核心修复：只上传当前包生成的这一个文件，绝不夹带旧文件
+          path: results/${{ matrix.id }}.json
 
   update-readme:
     needs: update-packages
@@ -66,32 +67,16 @@ jobs:
       - name: Download all results
         uses: actions/download-artifact@v8
         with:
-          path: results_tmp 
+          # 💡 既然上传的只有单个文件，直接平铺下载到 results/ 目录即可，不需要中间临时目录
+          path: results
           merge-multiple: true
-          
-      - name: Flatten results directory
-        shell: bash
-        run: |
-          # 💡 暴力清空旧的 results 目录
-          rm -rf results
-          mkdir -p results
-          
-          # 强制从 results_tmp 里把所有 json 复制过来
-          find results_tmp -name "*.json" -exec cp {} results/ \;
-          
-          echo "=== 最终准备提交的文件 ==="
-          ls -la results/
           
       - name: Update Bilingual READMEs
         shell: pwsh
         run: |
-          $results = Get-ChildItem -Path "results" -Filter "*.json" -Recurse | ForEach-Object { Get-Content $_.FullName -Raw | ConvertFrom-Json }
+          # 现在读取 results 下的所有 JSON，直接就能拿到最新数据
+          $results = Get-ChildItem -Path "results/*.json" | ForEach-Object { Get-Content $_.FullName -Raw | ConvertFrom-Json }
           
-          # 打印一下读到的内容，方便在日志里排错
-          Write-Host "================ 读到的 JSON 内容 ================"
-          $results | ForEach-Object { Write-Host "$($_.PackageId): $($_.Version) - $($_.Status)" }
-          Write-Host "==================================================="
-
           $tableEn = "| Package | Version | Status | PR Link |`n| --- | --- | --- | --- |`n"
           $tableZh = "| 软件包 | 版本 | 状态 | PR 链接 |`n| --- | --- | --- | --- |`n"
           
