@@ -201,5 +201,5 @@ $resultData = @{
     Timestamp = (Get-Date -Format "yyyy-MM-dd HH:mm:ss")
 }
 
-# 直接写入，确保每次都有最新的时间戳和状态
+# 直接覆盖写入
 $resultData | ConvertTo-Json | Out-File -FilePath $resultFile -Encoding utf8
