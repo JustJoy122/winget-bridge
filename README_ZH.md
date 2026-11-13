@@ -56,7 +56,7 @@
 2. 在仓库 **Settings -> Secrets and variables -> Actions** 中新建名为 `WINGET_TOKEN` 的 Secret。
 
 ## 📄 开源协议
-本仓库基于 MIT License 开源。
+本仓库基于 [MIT License](https://github.com/JustJoy122/winget-bridge/blob/main/LICENSE) 开源。
 
 
 
