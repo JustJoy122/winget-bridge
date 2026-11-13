@@ -56,7 +56,7 @@ To start tracking new software, edit the `packages.json` file in the root direct
 2. Go to **Settings -> Secrets and variables -> Actions** and create a secret named `WINGET_TOKEN`.
 
 ## 📄 License
-This repository is licensed under the MIT License.
+This repository is licensed under the [MIT License](https://github.com/JustJoy122/winget-bridge/blob/main/LICENSE).
 
 
 
