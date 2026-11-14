@@ -14,7 +14,6 @@ This repository acts as a centralized maintenance hub for multiple open-source W
 | Package | Version | Status | PR Link |
 | --- | --- | --- | --- |
 | AnywhereLabs.AgentsAnywhere | 2.1.0 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/469693) |
-| AnywhereLabs.DSHDesktop | 2.0.22-next | ✅ Up to date | - |
 | AstralSightStudios.AstroBox | 2.2.5 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/467853) |
 | LocalSend.LocalSend.CLI | 1.18.2 | ✅ Up to date | - |
 | LocalSend.LocalSend | 1.18.2 | ✅ Up to date | - |
