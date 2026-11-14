@@ -8,12 +8,13 @@ This repository acts as a centralized maintenance hub for multiple open-source W
 
 ## 📊 Automation Status Dashboard
 
-**Last Checked:** <!-- TIMESTAMP_START -->2026-11-14 02:55:39 (UTC)<!-- TIMESTAMP_END -->
+**Last Checked:** <!-- TIMESTAMP_START -->2026-11-14 09:45:46 (UTC)<!-- TIMESTAMP_END -->
 
 <!-- TABLE_START -->
 | Package | Version | Status | PR Link |
 | --- | --- | --- | --- |
 | AnywhereLabs.AgentsAnywhere | 2.1.0 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/469693) |
+| AnywhereLabs.DSHDesktop | 2.0.22-next | ✅ Up to date | - |
 | AstralSightStudios.AstroBox | 2.2.5 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/467853) |
 | LocalSend.LocalSend.CLI | 1.18.2 | ✅ Up to date | - |
 | LocalSend.LocalSend | 1.18.2 | ✅ Up to date | - |
@@ -56,6 +57,7 @@ To start tracking new software, edit the `packages.json` file in the root direct
 
 ## 📄 License
 This repository is licensed under the [MIT License](https://github.com/JustJoy122/winget-bridge/blob/main/LICENSE).
+
 
 
 

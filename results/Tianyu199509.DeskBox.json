@@ -1,7 +1,7 @@
 {
-  "PRLink": "https://github.com/microsoft/winget-pkgs/pull/459856",
-  "Status": "⏳ PR 等待审核",
-  "Timestamp": "2026-11-14 02:53:18",
+  "Timestamp": "2026-11-14 09:45:21",
   "PackageId": "Tianyu199509.DeskBox",
-  "Version": "1.5.9"
+  "Version": "1.5.9",
+  "Status": "⏳ PR 等待审核",
+  "PRLink": "https://github.com/microsoft/winget-pkgs/pull/459856"
 }
