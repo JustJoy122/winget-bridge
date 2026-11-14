@@ -43,7 +43,35 @@ if ($Type -eq "github") {
     $downloadUrls = $urlArray
     $firstUrl = $urlArray[0].Split("|")[0]
     $tempFile = "temp_setup.exe"
-    Invoke-WebRequest -Uri $firstUrl -OutFile $tempFile
+    Write-Host "Downloading fixed URL to extract version: $firstUrl"
+    
+    # 💡 修复：改用 curl.exe 并加入最多 3 次的重试机制
+    $maxRetries = 3
+    $retryCount = 0
+    $downloadSuccess = $false
+    
+    while ($retryCount -lt $maxRetries -and -not $downloadSuccess) {
+        try {
+            # -L 跟随重定向，-s 静默，-f 失败时不输出网页内容
+            curl.exe -L -s -f -o $tempFile $firstUrl
+            if (Test-Path $tempFile) {
+                $downloadSuccess = $true
+            } else {
+                throw "Download failed silently"
+            }
+        } catch {
+            $retryCount++
+            Write-Host "Download failed or interrupted. Retrying ($retryCount/$maxRetries) in 5 seconds..."
+            if (Test-Path $tempFile) { Remove-Item $tempFile -Force -ErrorAction SilentlyContinue }
+            Start-Sleep -Seconds 5
+        }
+    }
+    
+    if (-not $downloadSuccess) {
+        Write-Error "Failed to download $firstUrl after $maxRetries attempts."
+        exit 1
+    }
+    
     $exeVersion = (Get-Item $tempFile).VersionInfo.ProductVersion
     $rawVersion = $exeVersion -replace ',', '.' -replace ' ', ''
     
@@ -102,7 +130,14 @@ if ($isUpToDate) {
         $komacRelease = Invoke-RestMethod -Uri $komacApiUrl -Headers $headers
         $komacAsset = $komacRelease.assets | Where-Object { $_.name -match "x86_64-pc-windows-msvc\.exe$" } | Select-Object -First 1
         
-        Invoke-WebRequest -Uri $komacAsset.browser_download_url -OutFile komac.exe
+        # Komac 下载也加上重试
+        $komacRetries = 3
+        for ($i=0; $i -lt $komacRetries; $i++) {
+            try {
+                curl.exe -L -s -f -o komac.exe $komacAsset.browser_download_url
+                break
+            } catch { Start-Sleep -Seconds 3 }
+        }
         
         $komacArgs = @("update", $PackageId, "--version", $latestVersion, "--token", $env:WINGET_TOKEN, "--submit")
         if ($ReleaseNotesUrl) { $komacArgs += "--release-notes-url"; $komacArgs += $ReleaseNotesUrl }
@@ -138,7 +173,5 @@ $resultData = @{
     Timestamp = (Get-Date -Format "yyyy-MM-dd HH:mm:ss")
 }
 
-# 💡 打印出最终要写入的值，方便验证
 Write-Host "WRITING JSON: Version = $newVersion, Status = $status"
-
 $resultData | ConvertTo-Json | Out-File -FilePath "$resultDir/$($PackageId).json" -Encoding utf8
