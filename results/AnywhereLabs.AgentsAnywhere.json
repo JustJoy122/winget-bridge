@@ -1,7 +1,7 @@
 {
-  "Version": "2.2.0",
+  "Status": "⏳ PR 等待审核",
   "PRLink": "https://github.com/microsoft/winget-pkgs/pull/469693",
+  "Version": "2.2.0",
   "PackageId": "AnywhereLabs.AgentsAnywhere",
-  "Timestamp": "2026-11-14 20:51:24",
-  "Status": "⏳ PR 等待审核"
+  "Timestamp": "2026-11-15 00:39:17"
 }
