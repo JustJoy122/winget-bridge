@@ -1,7 +1,7 @@
 {
-  "Version": "2.21.0",
-  "PRLink": "https://github.com/microsoft/winget-pkgs/pull/474987",
   "Status": "⏳ PR 等待审核",
+  "PRLink": "https://github.com/microsoft/winget-pkgs/pull/474987",
+  "Timestamp": "2026-11-16 17:13:49",
   "PackageId": "ScottSloan.Bili23Downloader",
-  "Timestamp": "2026-11-16 07:00:54"
+  "Version": "2.21.0"
 }
