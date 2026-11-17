@@ -8,12 +8,12 @@
 
 ## 📊 自动化状态面板
 
-**最后检查时间：** <!-- TIMESTAMP_START -->2026-11-17 00:56:32 (UTC)<!-- TIMESTAMP_END -->
+**最后检查时间：** <!-- TIMESTAMP_START -->2026-11-17 08:48:26 (UTC)<!-- TIMESTAMP_END -->
 
 <!-- TABLE_START -->
 | 软件包 | 版本 | 状态 | PR 链接 |
 | --- | --- | --- | --- |
-| AnywhereLabs.AgentsAnywhere | 2.2.0 | ⏳ PR 等待审核 | [查看 PR](https://github.com/microsoft/winget-pkgs/pull/469693) |
+| AnywhereLabs.AgentsAnywhere | 2.2.0 | ⏳ PR 等待审核 | [查看 PR](https://github.com/microsoft/winget-pkgs/pull/481938) |
 | AnywhereLabs.DSHDesktop | 2.0.22-next | ✅ 已是最新 | - |
 | AstralSightStudios.AstroBox | 2.2.5 | ⏳ PR 等待审核 | [查看 PR](https://github.com/microsoft/winget-pkgs/pull/467853) |
 | LocalSend.LocalSend.CLI | 1.18.2 | ✅ 已是最新 | - |
@@ -57,6 +57,7 @@
 
 ## 📄 开源协议
 本仓库基于 [MIT License](https://github.com/JustJoy122/winget-bridge/blob/main/LICENSE) 开源。
+
 
 
 
