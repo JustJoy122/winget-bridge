@@ -8,7 +8,7 @@
 
 ## 📊 自动化状态面板
 
-**最后检查时间：** <!-- TIMESTAMP_START -->2026-11-18 08:49:32 (UTC)<!-- TIMESTAMP_END -->
+**最后检查时间：** <!-- TIMESTAMP_START -->2026-11-18 17:44:55 (UTC)<!-- TIMESTAMP_END -->
 
 <!-- TABLE_START -->
 | 软件包 | 版本 | 状态 | PR 链接 |
@@ -19,7 +19,7 @@
 | LocalSend.LocalSend.CLI | 1.18.2 | ✅ 已是最新 | - |
 | LocalSend.LocalSend | 1.18.2 | ✅ 已是最新 | - |
 | luolangaga.tubatools | 1.9.1 | ✅ 已是最新 | - |
-| Nlitesoft.NTLite | 2026.10.12522 | ✅ 已是最新 | - |
+| Nlitesoft.NTLite | 2026.11.13094 | ✅ 已是最新 | - |
 | Rainmeter.Rainmeter | 4.5.28.3936 | ✅ 已是最新 | - |
 | ScottSloan.Bili23Downloader | 2.21.0 | ⏳ PR 等待审核 | [查看 PR](https://github.com/microsoft/winget-pkgs/pull/474987) |
 | Tianyu199509.DeskBox | 1.5.9 | ✅ 已是最新 | - |
@@ -57,6 +57,7 @@
 
 ## 📄 开源协议
 本仓库基于 [MIT License](https://github.com/JustJoy122/winget-bridge/blob/main/LICENSE) 开源。
+
 
 
 
