@@ -1,7 +1,7 @@
 {
-  "Version": "26100.9711.71.3",
-  "PRLink": "https://github.com/microsoft/winget-pkgs/pull/485346",
   "PackageId": "valinet.ExplorerPatcher",
-  "Status": "⏳ PR 等待审核",
-  "Timestamp": "2026-11-21 01:56:00"
+  "Timestamp": "2026-11-21 09:10:12",
+  "Status": "✅ 已是最新",
+  "Version": "26100.9711.71.3",
+  "PRLink": ""
 }
