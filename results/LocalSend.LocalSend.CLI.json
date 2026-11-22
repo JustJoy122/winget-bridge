@@ -1,7 +1,7 @@
 {
   "Status": "✅ 已是最新",
-  "Timestamp": "2026-11-22 02:00:24",
-  "PackageId": "LocalSend.LocalSend.CLI",
+  "Version": "1.18.2",
+  "Timestamp": "2026-11-22 10:02:14",
   "PRLink": "",
-  "Version": "1.18.2"
+  "PackageId": "LocalSend.LocalSend.CLI"
 }
