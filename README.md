@@ -8,7 +8,7 @@ This repository acts as a centralized maintenance hub for multiple open-source W
 
 ## 📊 Automation Status Dashboard
 
-**Last Checked:** <!-- TIMESTAMP_START -->2026-11-23 13:57:21 (UTC)<!-- TIMESTAMP_END -->
+**Last Checked:** <!-- TIMESTAMP_START -->2026-11-24 01:29:53 (UTC)<!-- TIMESTAMP_END -->
 
 <!-- TABLE_START -->
 | Package | Version | Status | PR Link |
@@ -21,7 +21,7 @@ This repository acts as a centralized maintenance hub for multiple open-source W
 | Nlitesoft.NTLite | 2026.11.13137 | ✅ Up to date | - |
 | Rainmeter.Rainmeter | 4.5.28.3936 | ✅ Up to date | - |
 | ScottSloan.Bili23Downloader | 2.21.0 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/474987) |
-| Tianyu199509.DeskBox | 1.5.9 | ✅ Up to date | - |
+| Tianyu199509.DeskBox | 1.6.0 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/487308) |
 | valinet.ExplorerPatcher | 26100.9711.71.3 | ✅ Up to date | - |
 
 <!-- TABLE_END -->
@@ -56,6 +56,7 @@ To start tracking new software, edit the `packages.json` file in the root direct
 
 ## 📄 License
 This repository is licensed under the [MIT License](https://github.com/JustJoy122/winget-bridge/blob/main/LICENSE).
+
 
 
 
