@@ -8,20 +8,19 @@ This repository acts as a centralized maintenance hub for multiple open-source W
 
 ## 📊 Automation Status Dashboard
 
-**Last Checked:** <!-- TIMESTAMP_START -->2026-11-25 04:47:56 (UTC)<!-- TIMESTAMP_END -->
+**Last Checked:** <!-- TIMESTAMP_START -->2026-11-25 15:15:23 (UTC)<!-- TIMESTAMP_END -->
 
 <!-- TABLE_START -->
 | Package | Version | Status | PR Link |
 | --- | --- | --- | --- |
 | AnywhereLabs.AgentsAnywhere | 2.2.0 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/481938) |
 | AstralSightStudios.AstroBox | 2.2.6 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/467853) |
-| LocalSend.LocalSend.CLI | 1.19.0 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/488835) |
+| LocalSend.LocalSend.CLI | 1.19.0 | ⚠️ Submission Failed | - |
 | LocalSend.LocalSend | 1.19.0 | ✅ Up to date | - |
 | luolangaga.tubatools | 1.9.1 | ✅ Up to date | - |
 | Nlitesoft.NTLite | 2026.11.13137 | ✅ Up to date | - |
 | Rainmeter.Rainmeter | 4.5.28.3936 | ✅ Up to date | - |
 | ScottSloan.Bili23Downloader | 2.21.0 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/474987) |
-| Tianyu199509.DeskBox | 1.6.0 | ⏳ PR Pending | [View PR](https://github.com/microsoft/winget-pkgs/pull/487308) |
 | valinet.ExplorerPatcher | 26100.9711.71.3 | ✅ Up to date | - |
 
 <!-- TABLE_END -->
@@ -56,6 +55,7 @@ To start tracking new software, edit the `packages.json` file in the root direct
 
 ## 📄 License
 This repository is licensed under the [MIT License](https://github.com/JustJoy122/winget-bridge/blob/main/LICENSE).
+
 
 
 
