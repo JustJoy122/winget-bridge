@@ -1,7 +1,7 @@
 {
-  "Status": "✅ 已是最新",
+  "Status": "⏳ PR 等待审核",
+  "Timestamp": "2026-11-25 04:45:39",
+  "Version": "1.19.0",
   "PackageId": "LocalSend.LocalSend.CLI",
-  "PRLink": "",
-  "Timestamp": "2026-11-24 21:51:02",
-  "Version": "1.19.0"
+  "PRLink": "https://github.com/microsoft/winget-pkgs/pull/488835"
 }
