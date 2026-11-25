@@ -18,12 +18,6 @@
     "assetRegex": "Agents\\.Anywhere\\.Setup\\..*\\.exe$"
   },
     {
-    "id": "Tianyu199509.DeskBox",
-    "type": "github",
-    "repo": "Tianyu199509/DeskBox",
-    "assetRegex": "DeskBox_Setup_.*_(x64|arm64)\\.exe$"
-  },
-    {
     "id": "Nlitesoft.NTLite",
     "type": "fixed_url",
     "urls": "https://downloads.ntlite.com/files/NTLite_setup_x64.exe|x64,https://downloads.ntlite.com/files/NTLite_setup_x86_legacy.exe|x86",
