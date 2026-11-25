@@ -43,34 +43,26 @@ if ($Type -eq "github") {
     $downloadUrls = $urlArray
     $firstUrl = $urlArray[0].Split("|")[0]
     $tempFile = "temp_setup.exe"
-    Write-Host "Downloading fixed URL to extract version: $firstUrl"
     
-    # 💡 修复：改用 curl.exe 并加入最多 3 次的重试机制
+    Write-Host "Downloading fixed URL to extract version: $firstUrl"
     $maxRetries = 3
     $retryCount = 0
     $downloadSuccess = $false
     
     while ($retryCount -lt $maxRetries -and -not $downloadSuccess) {
         try {
-            # -L 跟随重定向，-s 静默，-f 失败时不输出网页内容
             curl.exe -L -s -f -o $tempFile $firstUrl
-            if (Test-Path $tempFile) {
-                $downloadSuccess = $true
-            } else {
-                throw "Download failed silently"
-            }
+            if (Test-Path $tempFile) { $downloadSuccess = $true }
+            else { throw "Download failed silently" }
         } catch {
             $retryCount++
-            Write-Host "Download failed or interrupted. Retrying ($retryCount/$maxRetries) in 5 seconds..."
+            Write-Host "Download failed. Retrying ($retryCount/$maxRetries) in 5 seconds..."
             if (Test-Path $tempFile) { Remove-Item $tempFile -Force -ErrorAction SilentlyContinue }
             Start-Sleep -Seconds 5
         }
     }
     
-    if (-not $downloadSuccess) {
-        Write-Error "Failed to download $firstUrl after $maxRetries attempts."
-        exit 1
-    }
+    if (-not $downloadSuccess) { Write-Error "Failed to download after $maxRetries attempts."; exit 1 }
     
     $exeVersion = (Get-Item $tempFile).VersionInfo.ProductVersion
     $rawVersion = $exeVersion -replace ',', '.' -replace ' ', ''
@@ -93,16 +85,24 @@ if ($Type -eq "github") {
     exit 1
 }
 
+# 💡 核心修复：正确拼接多级包名路径
 $parts = $PackageId.Split('.')
-$firstLetter = $parts[0].Substring(0, 1).ToLower()
-$manifestPath = "$firstLetter/$($parts[0])/$($parts[1])"
+$publisher = $parts[0]
+# 把第一段之后的所有段用 . 连起来，比如 LocalSend.CLI
+$packageName = ($parts | Select-Object -Skip 1) -join '.' 
+$firstLetter = $publisher.Substring(0, 1).ToLower()
+$manifestPath = "$firstLetter/$publisher/$packageName"
+
+Write-Host "Looking up winget path: $manifestPath"
 $wingetApiUrl = "https://api.github.com/repos/microsoft/winget-pkgs/contents/manifests/$manifestPath"
 
 $existingVersions = @()
 try {
     $manifests = Invoke-RestMethod -Uri $wingetApiUrl -Headers $headers
     $existingVersions = $manifests | Where-Object { $_.type -eq "dir" } | Select-Object -ExpandProperty name
-} catch {}
+} catch {
+    Write-Host "Package manifest directory not found."
+}
 
 $isUpToDate = $existingVersions -contains $latestVersion
 $status = "Unknown"
@@ -130,7 +130,6 @@ if ($isUpToDate) {
         $komacRelease = Invoke-RestMethod -Uri $komacApiUrl -Headers $headers
         $komacAsset = $komacRelease.assets | Where-Object { $_.name -match "x86_64-pc-windows-msvc\.exe$" } | Select-Object -First 1
         
-        # Komac 下载也加上重试
         $komacRetries = 3
         for ($i=0; $i -lt $komacRetries; $i++) {
             try {
