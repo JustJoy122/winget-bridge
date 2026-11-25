@@ -1,7 +1,7 @@
 {
-  "Version": "1.19.0",
   "Status": "⚠️ PR 提交可能失败",
-  "PRLink": "",
+  "Timestamp": "2026-11-25 23:43:12",
   "PackageId": "LocalSend.LocalSend.CLI",
-  "Timestamp": "2026-11-25 15:15:06"
+  "Version": "1.19.0",
+  "PRLink": ""
 }
