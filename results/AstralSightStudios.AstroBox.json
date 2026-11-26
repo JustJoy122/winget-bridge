@@ -1,7 +1,7 @@
 {
   "PackageId": "AstralSightStudios.AstroBox",
-  "PRLink": "https://github.com/microsoft/winget-pkgs/pull/467853",
   "Version": "2.2.6",
-  "Timestamp": "2026-11-25 23:43:03",
-  "Status": "⏳ PR 等待审核"
+  "Status": "⏳ PR 等待审核",
+  "Timestamp": "2026-11-26 06:29:26",
+  "PRLink": "https://github.com/microsoft/winget-pkgs/pull/467853"
 }
